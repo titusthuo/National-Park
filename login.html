@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Signup or Login</title>
+    <style>
+        body {
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            background-color: #1b1b32;
+            color: #f5f6f7;
+            font-family: Tahoma;
+            font-size: 16px;
+        }
+        
+        h1,
+        p {
+            margin: 1em auto;
+            text-align: center;
+        }
+        
+        form {
+            width: 60vw;
+            max-width: 500px;
+            min-width: 300px;
+            margin: 0 auto;
+            padding-bottom: 2em;
+        }
+        
+        fieldset {
+            border: none;
+            padding: 2rem 0;
+            border-bottom: 3px solid #3b3b4f;
+        }
+        
+        fieldset:last-of-type {
+            border-bottom: none;
+        }
+        
+        label {
+            display: block;
+            margin: 0.5rem 0;
+        }
+        
+        input,
+        textarea,
+        select {
+            margin: 10px 0 0 0;
+            width: 100%;
+            min-height: 2em;
+            background-color: #0a0a23;
+            border: 1px solid #0a0a23;
+            color: #ffffff;
+        }
+        
+        .inline {
+            width: unset;
+            margin: 0 0.5em 0 0;
+            vertical-align: middle;
+        }
+        
+        input[type="submit"] {
+            display: block;
+            width: 60%;
+            margin: 1em auto;
+            height: 2em;
+            font-size: 1.1rem;
+            background-color: #3b3b4f;
+            border-color: white;
+            min-width: 300px;
+        }
+        
+        input[type="file"] {
+            padding: 1px 2px;
+        }
+        
+        a {
+            color: #dfdfe2;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            /* Center the list items */
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+        
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3b3b4f;
+            color: #dfdfe2;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        a:hover {
+            background-color: #4f4f63;
+        }
+    </style>
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"; import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"; import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword
+        } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // Firebase configuration const firebaseConfig = { apiKey: "AIzaSyDrWySFdV_UVieZVTcqueusvEMUci0CjOU", authDomain: "todo-list-c7cca.firebaseapp.com", databaseURL: "https://todo-list-c7cca-default-rtdb.firebaseio.com",
+        projectId: "todo-list-c7cca", storageBucket: "todo-list-c7cca.appspot.com", messagingSenderId: "790407574131", appId: "1:790407574131:web:cbd991d3e5baa63f1e7006" }; // Initialize Firebase const app = initializeApp(firebaseConfig); const db = getDatabase(app);
+        const auth = getAuth(); // Show signup form function showSignupForm() { document.getElementById("signup-form").style.display = "block"; document.getElementById("login-form").style.display = "none"; } // Show login form function showLoginForm()
+        { document.getElementById("signup-form").style.display = "none"; document.getElementById("login-form").style.display = "block"; } // Signup handler document.getElementById("signup-form").addEventListener("submit", function (e) { e.preventDefault();
+        const firstName = document.getElementById("first-name").value; const lastName = document.getElementById("last-name").value; const username = document.getElementById("username").value; const email = document.getElementById("email").value; const
+        phone = document.getElementById("phone").value; const password = document.getElementById("password").value; createUserWithEmailAndPassword(auth, email, password) .then(userCredential => { const user = userCredential.user; const userId = user.uid;
+        set(ref(db, 'users/' + userId), { firstName: firstName, lastName: lastName, username: username, email: email, phone: phone }); alert("User signed up and details stored!"); document.getElementById("signup-form").reset(); }) .catch(error => { console.error("Error
+        signing up: ", error); alert(error.message); }); }); // Login handler document.getElementById("login-form").addEventListener("submit", function (e) { e.preventDefault(); const email = document.getElementById("login-username").value; const password
+        = document.getElementById("login-password").value; signInWithEmailAndPassword(auth, email, password) .then(userCredential => { alert("User logged in successfully!"); document.getElementById("login-form").reset(); }) .catch(error => { console.error("Error
+        logging in: ", error); alert(error.message); }); });
+    </script>
+</head>
+
+<body>
+    <h1>Signup or Login</h1>
+    <p>Please choose an option below:</p>
+    <div>
+        <button onclick="showSignupForm()">Sign Up</button>
+        <button onclick="showLoginForm()">Login</button>
+    </div>
+
+    <!-- Signup Form -->
+    <form id="signup-form" method="post" style="display: none;">
+        <fieldset>
+            <legend>Signup Form</legend>
+            <label for="first-name">First Name: <input id="first-name" name="first-name" type="text" required /></label>
+            <label for="last-name">Last Name: <input id="last-name" name="last-name" type="text" required /></label>
+            <label for="username">Username: <input id="username" name="username" type="text" required /></label>
+            <label for="password">Password: <input id="password" name="password" type="password" pattern="[a-z0-9]{8,}" required /></label>
+            <label for="confirm-password">Confirm Password: <input id="confirm-password" name="confirm-password" type="password" pattern="[a-z0-9]{8,}" required /></label>
+            <label for="email">Email: <input id="email" name="email" type="email" required /></label>
+            <label for="phone">Phone Number: <input id="phone" name="phone" type="tel" required /></label>
+            <input type="submit" value="Signup" />
+        </fieldset>
+    </form>
+
+    <!-- Login Form -->
+    <form id="login-form" method="post" style="display: none;">
+        <fieldset>
+            <legend>Login Form</legend>
+            <label for="login-username">Username: <input id="login-username" name="login-username" type="text" required /></label>
+            <label for="login-password">Password: <input id="login-password" name="login-password" type="password" required /></label>
+            <input type="submit" value="Login" />
+        </fieldset>
+    </form>
+
+    <ul>
+        <li><a href="animalgallery.html">Animal Gallery</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="department.html">Department</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="index.html">Index</a></li>
+        <li><a href="introduction.html">Introduction</a></li>
+    </ul>
+
+    <!-- JavaScript to toggle between signup and login forms -->
+    <script>
+        function showSignupForm() {
+            document.getElementById("signup-form").style.display = "block";
+            document.getElementById("login-form").style.display = "none";
+        }
+
+        function showLoginForm() {
+            document.getElementById("signup-form").style.display = "none";
+            document.getElementById("login-form").style.display = "block";
+        }
+    </script>
+</body>
+
+</html>
